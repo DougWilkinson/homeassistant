@@ -1,0 +1,26 @@
+- action:
+  - alias: ledontest
+    data: {}
+    service: light.toggle
+  alias: ledtest
+  condition: []
+  id: '1505445630144'
+  trigger:
+  - entity_id: sensor.sn1_pir
+    from: standby
+    platform: state
+    to: motion detected
+
+- action:
+  - alias: watertest
+    data: {}
+    shell_command: 'curl -X POST https://maker.ifttt.com/trigger/catwater/with/key/l72npigj6YXGscuyX2FPEmgNljt-Ok_fw7aCZBS-1Ni'
+  alias: watercattest
+  condition: []
+  id: '1505445630144'
+  trigger:
+  - entity_id: sensor.sn1_pir
+    from: standby
+    platform: state
+    to: motion detected
+

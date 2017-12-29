@@ -1,0 +1,315 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: DougsHome
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 31
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/New_York
+
+# Show links to resources in log and frontend
+# introduction:
+
+# Enables the frontend
+frontend:
+
+
+mqtt:  
+  broker: 192.168.1.138  
+  port: 1883  
+  client_id: home-assistant-1  
+  username: sheldon  
+  password: !secret mqtt_pwd  
+
+ifttt:
+  key: !secret iftt_pwd  
+
+#device_tracker:
+#  - platform: ddwrt
+#    host: 192.168.1.1
+#    username: admin
+#    password: !secret mqtt_pwd
+#  - platform: bluetooth_tracker
+  
+sensor:  
+  - platform: mqtt  
+    state_topic: "dougha/miniblind"  
+    name: "miniblink LDR"
+    unit_of_measurement: "LUX"  
+    value_template: '{{ value_json.ldr }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/miniblind"  
+    name: "miniblind DIST"  
+    unit_of_measurement: "mm"
+    value_template: '{{ value_json.distance }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/miniblind"  
+    name: "miniblind"  
+    value_template: '{{ value_json.blinds }}'  
+  
+# end miniblinds
+
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "refrig tempfail"  
+    unit_of_measurement: "times"  
+    value_template: '{{ value_json.frgfails }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Freezer tempfail"  
+    unit_of_measurement: "times"  
+    value_template: '{{ value_json.frzfails }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Soil Moisture"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.soil }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Refrig Humidity"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.rhumid | round(1) }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Freezer Humidity"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.fhumid | round(1) }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Refrig Temp"  
+    unit_of_measurement: "°F"  
+    value_template: '{{ value_json.rtemp | round(1) }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/kitchen"  
+    name: "Freezer Temp"  
+    unit_of_measurement: "°F"  
+    value_template: '{{ value_json.ftemp | round(1) }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"  
+    name: "SN1 Humidity"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.humidity | round(1) }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"  
+    name: "SN1 LDR"
+    unit_of_measurement: "LUX"  
+    value_template: '{{ value_json.ldr }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"  
+    name: "SN1 PIR"  
+    value_template: '{{ value_json.motion }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"  
+    name: "SN1 DIST"  
+    unit_of_measurement: "mm"
+    value_template: '{{ value_json.distance }}'  
+  
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"  
+    name: "SN1 Temperature"  
+    unit_of_measurement: "°F"  
+    value_template: '{{ value_json.temperature | round(1) }}'  
+
+  - platform: mqtt  
+    state_topic: "dougha/sensornode1"
+    name: "SN1 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+  
+  - platform: mqtt  
+    state_topic: "dougha/ESP_316A0A"  
+    name: "Entry-way Temperature"  
+    unit_of_measurement: "°F"  
+    value_template: '{{ value_json.temperature | round(1) }}'  
+
+  - platform: mqtt  
+    state_topic: "dougha/ESP_316A0A"
+    name: "Entry-way Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+    
+  - platform: mqtt  
+    state_topic: "dougha/ESP_316A0A"  
+    name: "Entry-way LDR"
+    unit_of_measurement: "LUX"  
+    value_template: '{{ value_json.ldr }}'  
+
+  - platform: mqtt  
+    state_topic: "dougha/ESP_316A0A"  
+    name: "Entry-way Humidity"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.humidity | round(1) }}'  
+  
+  - platform: wunderground
+    api_key: !secret wund_key
+    monitored_conditions:
+      - location
+      - temp_f
+      - feelslike_f
+      - precip_1d
+      - relative_humidity
+      - weather_1d
+      - wind_dir
+      - wind_mph
+
+#  - platform: speedtest
+#    monitored_conditions:
+#      - ping
+#      - download
+#      - upload
+
+#  - platform: systemmonitor
+#    resources:
+#      - type: disk_use_percent
+#        arg: /home
+#      - type: memory_free
+  
+light:
+  - platform: mqtt_json  
+    name: "miniblind LED"  
+    state_topic: "dougha/miniblind"  
+    command_topic: "dougha/miniblind/set"  
+    brightness: true  
+    flash: true  
+    rgb: true  
+    optimistic: false  
+    qos: 0  
+  
+  - platform: mqtt_json  
+    name: "SN1 LED"  
+    state_topic: "dougha/sensornode1"  
+    command_topic: "dougha/sensornode1/set"  
+    brightness: true  
+    flash: true  
+    rgb: true  
+    optimistic: false  
+    qos: 0  
+  
+  - platform: mqtt_json  
+    name: "chimes"  
+    state_topic: "dougha/chimes"
+    command_topic: "dougha/chimes/set"  
+    optimistic: false  
+    effect: true
+    
+  - platform: mqtt_json
+    name: "LED Strip"
+    state_topic: "dougha/ledstrip"
+    command_topic: "dougha/ledstrip/set"
+    effect: true
+    effect_list:
+      - bpm
+      - candy cane  
+      - confetti  
+      - cyclon rainbow  
+      - dots  
+      - fire  
+      - glitter  
+      - juggle  
+      - lightning
+      - noise  
+      - police all  
+      - police one  
+      - rainbow  
+      - rainbow with glitter  
+      - ripple  
+      - sinelon  
+      - solid  
+      - twinkle  
+    brightness: true
+    flash: true
+    rgb: true
+    optimistic: false
+    qos: 0
+
+input_select:
+  chime_effect:
+    name: Chime Effect
+    options:
+     - "hour"
+     - "quarter"
+     - "half"
+     - "forty5"
+     - "chime1"
+     - "chime2"
+     - "chime3"
+     - "chime4"
+     - "1"
+     - "2"
+     - "3"
+     - "4"
+     - "5"
+     - "6"
+     - "7"
+     - "8"
+     - "9"
+     - "10"
+     - "11"
+     - "12"
+    initial: "chime1"
+
+
+nest:
+  client_id: !secret nest_id
+  client_secret: !secret nest_key
+  sensors:
+    monitored_conditions:
+      - 'temperature'
+      - 'target'
+      - 'humidity'
+
+# Enables configuration UI
+config:
+
+http:
+  # Uncomment this to add a password (recommended!)
+  api_password: !secret mqtt_pwd
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google
+
+group: !include groups.yaml
+automation: !include automations.yaml

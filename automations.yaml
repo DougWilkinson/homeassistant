@@ -1,0 +1,95 @@
+- action:
+  - alias: ifttt_catwater
+    data:
+      event: catwater
+    service: ifttt.trigger
+  alias: catwater
+  condition: []
+  id: '1506568931077'
+  trigger:
+  - entity_id: sensor.SN1_PIR
+    from: standby
+    platform: state
+    to: motion detected
+
+- alias: "LED Animation Speed"
+  initial_state: False
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_slider.led_animation_speed
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/ledstrip/set"
+        payload: '{"transition":{{ trigger.to_state.state | int }}}'
+
+
+- alias: "Chimes Effect"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_select.chime_effect
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/chimes/set"
+        payload: '{"chimeeffect":"{{trigger.to_state.state | string }}"}'
+
+- alias: "Quarter chime"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: time
+      minutes: 15
+      seconds: 00
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/chimes/set"
+        payload: '{"chimeeffect":"quarter", "state":"ON"}'
+    
+- alias: "Half hour chime"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: time
+      minutes: 30
+      seconds: 00
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/chimes/set"
+        payload: '{"chimeeffect":"half", "state":"ON"}'
+
+- alias: "forty5 hour chime"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: time
+      minutes: 45
+      seconds: 00
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/chimes/set"
+        payload: '{"chimeeffect":"forty5", "state":"ON"}'
+
+- alias: "Hour chime"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: time
+      minutes: 00
+      seconds: 00
+  action:
+#    - service: mqtt.publish
+#      data_template:
+#        topic: "dougha/chimes/set"
+#        payload: '{"chimeeffect":"hour", "state":"ON"}'
+    - service: mqtt.publish
+      data_template:
+        topic: "dougha/chimes/set"
+        payload: '{"chimeeffect":"{{ now().hour }}", "state":"ON"}'
+

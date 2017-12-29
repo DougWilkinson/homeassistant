@@ -1,0 +1,7 @@
+*
+!*.yaml
+!.gitignore
+secrets.yaml
+known_devices.yaml
+nest.conf
+home-assistant_v2.db
